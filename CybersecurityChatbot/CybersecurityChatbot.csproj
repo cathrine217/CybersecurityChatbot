@@ -47,9 +47,9 @@
     <Compile Include="MainWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SentimentAnalyzer.cs" />
+    <Compile Include="Services\SentimentAnalyzer.cs" />
     <Compile Include="UIHelper.cs" />
-    <Compile Include="UserProfile.cs" />
+    <Compile Include="Models\UserProfile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
