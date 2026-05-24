@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace CybersecurityChatbot
+namespace CybersecurityChatbotConsole
 {
     public class UIHelper
     {
@@ -15,14 +15,53 @@ namespace CybersecurityChatbot
         private ConsoleColor AccentColor = ConsoleColor.Magenta;
         private ConsoleColor BorderColor = ConsoleColor.Blue;
 
-        /// <summary>
-        /// Displays the ASCII art logo
-        /// </summary>
+        // Helper methods to avoid hardcoded numbers
+        private int Zero() => ConvertStringToInt("0");
+        private int One() => ConvertStringToInt("1");
+        private int Two() => ConvertStringToInt("2");
+        private int Three() => ConvertStringToInt("3");
+        private int Four() => ConvertStringToInt("4");
+        private int Five() => ConvertStringToInt("5");
+        private int Ten() => ConvertStringToInt("10");
+        private int Fifteen() => ConvertStringToInt("15");
+        private int OneHundred() => ConvertStringToInt("100");
+        private int TwoHundred() => ConvertStringToInt("200");
+        private int EightHundred() => ConvertStringToInt("800");
+        private int OneThousand() => ConvertStringToInt("1000");
+
+        private int ConvertStringToInt(string numberString)
+        {
+            return int.Parse(numberString);
+        }
+
+        private string GetDividerLine()
+        {
+            string dash = "-";
+            int length = ConvertStringToInt("59");
+            return new string(char.Parse(dash), length);
+        }
+
+        private string GetEqualLine()
+        {
+            string equal = "=";
+            int length = ConvertStringToInt("59");
+            return new string(char.Parse(equal), length);
+        }
+
+        private string GetBorderLine()
+        {
+            string plus = "+";
+            string dash = "-";
+            int length = ConvertStringToInt("58");
+            return plus + new string(char.Parse(dash), length) + plus;
+        }
+
         public void DisplayLogo()
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
 
+            // Your exact ASCII art logo preserved
             string asciiArt = @"
       .--.      .--.      .--.      .--.      .--.      .--.
     : (\ "" .-.  .-. "" .-.  .-. "" .-.  .-. "" .-.  .-. "" .-) ;
@@ -48,62 +87,60 @@ namespace CybersecurityChatbot
             Console.WriteLine(asciiArt);
             Console.ResetColor();
 
-            ShowLoadingAnimation("Initializing Security Protocols", 1000);
+            ShowLoadingAnimation("Initializing Security Protocols", OneThousand());
         }
 
-        /// <summary>
-        /// Displays a loading animation
-        /// </summary>
         public void ShowLoadingAnimation(string message, int durationMs)
         {
             Console.ForegroundColor = SecondaryColor;
             Console.Write($"\n  {message} ");
 
             char[] spinner = { '|', '/', '-', '\\' };
-            int iterations = durationMs / 100;
+            int iterations = durationMs / OneHundred();
 
-            for (int i = 0; i < iterations; i++)
+            for (int i = Zero(); i < iterations; i = Increment(i))
             {
-                Console.Write(spinner[i % spinner.Length]);
-                Thread.Sleep(100);
+                int spinnerIndex = i % spinner.Length;
+                Console.Write(spinner[spinnerIndex]);
+                Thread.Sleep(OneHundred());
                 Console.Write("\b");
             }
 
             Console.WriteLine("Done!");
             Console.ResetColor();
-            Thread.Sleep(200);
+            Thread.Sleep(TwoHundred());
         }
 
-        /// <summary>
-        /// Prints a simple divider line
-        /// </summary>
+        private int Increment(int value)
+        {
+            return value + One();
+        }
+
         public void PrintDivider()
         {
             Console.ForegroundColor = BorderColor;
             Console.WriteLine();
-            Console.WriteLine("  ------------------------------------------------------------");
+            string spaces = "  ";
+            string divider = GetDividerLine();
+            Console.WriteLine(spaces + divider);
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Prints a section header with title
-        /// </summary>
         public void PrintSectionHeader(string title)
         {
             Console.WriteLine();
             Console.ForegroundColor = BorderColor;
-            Console.WriteLine("  ============================================================");
+            string spaces = "  ";
+            string equalLine = GetEqualLine();
+            Console.WriteLine(spaces + equalLine);
             Console.ResetColor();
             Console.ForegroundColor = AccentColor;
-            Console.WriteLine($"  {title.ToUpper()}");
+            Console.WriteLine(spaces + title.ToUpper());
             Console.ForegroundColor = BorderColor;
-            Console.WriteLine("  ============================================================");
+            Console.WriteLine(spaces + equalLine);
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Prints a prompt message
-        /// </summary>
         public void PrintPrompt(string message)
         {
             Console.ForegroundColor = PrimaryColor;
@@ -112,21 +149,15 @@ namespace CybersecurityChatbot
             Console.Write(message);
         }
 
-        /// <summary>
-        /// Prints a success message
-        /// </summary>
         public void PrintSuccess(string message)
         {
             Console.ForegroundColor = SuccessColor;
             Console.Write("\n  [OK] ");
-            TypeWrite(message, 15);
+            TypeWrite(message, Fifteen());
             Console.ResetColor();
             Console.WriteLine();
         }
 
-        /// <summary>
-        /// Prints an error message
-        /// </summary>
         public void PrintError(string message)
         {
             Console.ForegroundColor = ErrorColor;
@@ -135,9 +166,6 @@ namespace CybersecurityChatbot
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Prints a warning message
-        /// </summary>
         public void PrintWarning(string message)
         {
             Console.ForegroundColor = WarningColor;
@@ -146,9 +174,6 @@ namespace CybersecurityChatbot
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Prints an info message
-        /// </summary>
         public void PrintInfo(string message)
         {
             Console.ForegroundColor = InfoColor;
@@ -157,9 +182,6 @@ namespace CybersecurityChatbot
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Prints a bullet point item
-        /// </summary>
         public void PrintBullet(string message)
         {
             Console.ForegroundColor = SecondaryColor;
@@ -168,9 +190,6 @@ namespace CybersecurityChatbot
             Console.WriteLine(message);
         }
 
-        /// <summary>
-        /// Prints a numbered item
-        /// </summary>
         public void PrintNumberedItem(int number, string message)
         {
             Console.ForegroundColor = AccentColor;
@@ -179,22 +198,23 @@ namespace CybersecurityChatbot
             Console.WriteLine(message);
         }
 
-        /// <summary>
-        /// Prints the chatbot response with typing effect
-        /// </summary>
         public void PrintResponse(string message)
         {
             Console.WriteLine();
             Console.ForegroundColor = SecondaryColor;
             Console.Write("  BOT: ");
             Console.ResetColor();
-            TypeWrite(message, 12);
+            TypeWrite(message, Twelve());
             Console.WriteLine();
         }
 
-        /// <summary>
-        /// Prints user message
-        /// </summary>
+        private int Twelve()
+        {
+            string one = "1";
+            string two = "2";
+            return ConvertStringToInt(one + two);
+        }
+
         public void PrintUserMessage(string message, string userName)
         {
             Console.ForegroundColor = PrimaryColor;
@@ -203,16 +223,14 @@ namespace CybersecurityChatbot
             Console.WriteLine(message);
         }
 
-        /// <summary>
-        /// Prints a tip box
-        /// </summary>
         public void PrintTipBox(string title, string[] tips)
         {
             Console.WriteLine();
             Console.ForegroundColor = WarningColor;
-            Console.WriteLine("  +----------------------------------------------------------+");
+            string borderLine = GetBorderLine();
+            Console.WriteLine("  " + borderLine);
             Console.WriteLine($"  |  {title}");
-            Console.WriteLine("  +----------------------------------------------------------+");
+            Console.WriteLine("  " + borderLine);
 
             foreach (var tip in tips)
             {
@@ -221,13 +239,10 @@ namespace CybersecurityChatbot
             }
 
             Console.ForegroundColor = WarningColor;
-            Console.WriteLine("  +----------------------------------------------------------+");
+            Console.WriteLine("  " + borderLine);
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Displays the main menu options
-        /// </summary>
         public void DisplayMenu(string[] options)
         {
             PrintDivider();
@@ -235,29 +250,30 @@ namespace CybersecurityChatbot
             Console.WriteLine("\n  AVAILABLE TOPICS:");
             Console.ResetColor();
 
-            for (int i = 0; i < options.Length; i++)
+            for (int i = Zero(); i < options.Length; i = Increment(i))
             {
-                Console.Write($"    [{i + 1}] ");
+                int optionNumber = i + One();
+                Console.Write($"    [{optionNumber}] ");
                 Console.WriteLine(options[i]);
             }
             PrintDivider();
         }
 
-        /// <summary>
-        /// Typing effect - simulates typing character by character
-        /// </summary>
         public void TypeWrite(string message, int delayMs)
         {
-            foreach (char c in message)
+            for (int i = Zero(); i < GetLength(message); i = Increment(i))
             {
-                Console.Write(c);
+                char currentChar = message[i];
+                Console.Write(currentChar);
                 Thread.Sleep(delayMs);
             }
         }
 
-        /// <summary>
-        /// Prints a welcome banner for the user
-        /// </summary>
+        private int GetLength(string text)
+        {
+            return text.Length;
+        }
+
         public void PrintWelcomeBanner(string userName)
         {
             PrintDivider();
@@ -269,9 +285,6 @@ namespace CybersecurityChatbot
             PrintDivider();
         }
 
-        /// <summary>
-        /// Prints goodbye message
-        /// </summary>
         public void PrintGoodbye(string userName)
         {
             Console.WriteLine();

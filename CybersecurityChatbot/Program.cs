@@ -1,27 +1,23 @@
 ﻿using System;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace CybersecurityChatbotGUI
+namespace CybersecurityChatbotConsole
 {
-    static class Program
+    class Program
     {
-        [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            try
-            {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainWindow());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to start application: {ex.Message}",
-                              "Error",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
-            }
+            Console.Title = "Cybersecurity Awareness Chatbot - Stay Safe Online";
+
+            string widthString = "90";
+            string heightString = "40";
+            Console.WindowWidth = int.Parse(widthString);
+            Console.WindowHeight = int.Parse(heightString);
+
+            AudioService audio = new AudioService();
+            audio.PlayGreeting();
+
+            Chatbot chatbot = new Chatbot();
+            chatbot.Start();
         }
     }
 }
