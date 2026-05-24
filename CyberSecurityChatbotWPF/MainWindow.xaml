@@ -4,11 +4,11 @@
         Title="Cybersecurity Awareness Bot" 
         Height="700" Width="900"
         WindowStartupLocation="CenterScreen"
-        Background="#1E1E2E">
+        Background="Purple" >
 
     <Window.Resources>
         <Style x:Key="SendButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#4ECDC4"/>
+            <Setter Property="Background" Value="DeepSkyBlue"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -32,7 +32,7 @@
         </Style>
 
         <Style x:Key="MessageBubbleBot" TargetType="Border">
-            <Setter Property="Background" Value="#2D2D44"/>
+            <Setter Property="Background" Value="MediumPurple"/>
             <Setter Property="CornerRadius" Value="15,15,15,5"/>
             <Setter Property="Padding" Value="12,8"/>
             <Setter Property="Margin" Value="5"/>
@@ -49,19 +49,19 @@
         </Grid.RowDefinitions>
 
         <!-- Header with ASCII Art -->
-        <Border Grid.Row="0" Background="#2D2D44" Padding="15">
+        <Border Grid.Row="0" Background="MediumPurple" Padding="15">
             <StackPanel>
                 <TextBlock Text="╔════════════════════════════════════════════════════════╗" 
-                           Foreground="#4ECDC4" FontFamily="Consolas" FontSize="10" 
+                           Foreground="Purple" FontFamily="Consolas" FontSize="10" 
                            HorizontalAlignment="Center"/>
                 <TextBlock Text="║              CYBERSECURITY AWARENESS BOT               ║" 
-                           Foreground="#4ECDC4" FontFamily="Consolas" FontSize="12" 
+                           Foreground="Purple" FontFamily="Consolas" FontSize="12" 
                            FontWeight="Bold" HorizontalAlignment="Center"/>
                 <TextBlock Text="║            'Stay Safe in the Digital World'              ║" 
-                           Foreground="#45B7D1" FontFamily="Consolas" FontSize="10" 
+                           Foreground="Purple" FontFamily="Consolas" FontSize="10" 
                            HorizontalAlignment="Center"/>
                 <TextBlock Text="╚════════════════════════════════════════════════════════╝" 
-                           Foreground="#4ECDC4" FontFamily="Consolas" FontSize="10" 
+                           Foreground="Purple" FontFamily="Consolas" FontSize="10" 
                            HorizontalAlignment="Center"/>
             </StackPanel>
         </Border>
@@ -69,12 +69,12 @@
         <!-- Chat Messages Area -->
         <ScrollViewer Grid.Row="1" Name="MessagesScrollViewer" 
                       VerticalScrollBarVisibility="Auto" 
-                      Background="#1E1E2E">
+                      Background="MediumPurple">
             <StackPanel Name="MessagesPanel" Margin="10" Orientation="Vertical"/>
         </ScrollViewer>
 
         <!-- Input Area -->
-        <Border Grid.Row="2" Background="#2D2D44" Padding="10">
+        <Border Grid.Row="2" Background="Purple" Padding="10">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -83,8 +83,8 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Name="InputTextBox" Grid.Column="0" 
-                         Background="#1E1E2E" Foreground="White" 
-                         BorderBrush="#4ECDC4" BorderThickness="1"
+                         Background="SteelBlue" Foreground="White" 
+                         BorderBrush="DimGray" BorderThickness="1"
                          FontSize="14" Padding="10"
                          TextWrapping="Wrap" MinHeight="40"
                          KeyDown="InputTextBox_KeyDown"/>
@@ -96,7 +96,7 @@
                 <Button Grid.Column="2" Content="CLEAR" 
                         Style="{StaticResource SendButtonStyle}"
                         Click="ClearButton_Click" Width="80" 
-                        Background="#E74C3C"/>
+                        Background="Red"/>
             </Grid>
         </Border>
     </Grid>
