@@ -1,10 +1,8 @@
 # Cybersecurity Awareness Chatbot
 
-## A South African Initiative for Online Safety
+A South African Initiative for Online Safety
 
----
-
-## TABLE OF CONTENTS
+TABLE OF CONTENTS
 
 1. [Project Overview](#project-overview)
 2. [What This Chatbot Does](#what-this-chatbot-does)
@@ -17,14 +15,11 @@
 9. [Features Explained in Detail](#features-explained-in-detail)
 10. [String Manipulation Techniques](#string-manipulation-techniques)
 11. [Testing Guide](#testing-guide)
-12. [GitHub Setup Guide](#github-setup-guide)
-13. [Common Problems and Solutions](#common-problems-and-solutions)
+12. [Common Problems and Solutions](#common-problems-and-solutions)
 14. [Project Checklist](#project-checklist)
-15. [Submission Information](#submission-information)
 
----
 
-## PROJECT OVERVIEW
+PROJECT OVERVIEW
 
 The Cybersecurity Awareness Chatbot is an educational application designed to help South African citizens learn about online safety. Cyber attacks are increasing in South Africa, targeting individuals, businesses, and government institutions. This chatbot teaches users how to:
 
@@ -37,9 +32,7 @@ The Cybersecurity Awareness Chatbot is an educational application designed to he
 
 The project is divided into TWO parts as required by the PROG6221 POE assignment.
 
----
-
-## WHAT THIS CHATBOT DOES
+WHAT THIS CHATBOT DOES
 
 When you run the chatbot, it will:
 
@@ -52,9 +45,7 @@ When you run the chatbot, it will:
 7. Detect your mood - Responds differently if you're worried or curious
 8. Suggest follow-up topics - Offers more information on your chosen topic
 
----
-
-## PART 1 VS PART 2 EXPLAINED
+PART 1 VS PART 2 EXPLAINED
 
 | Feature | Part 1 (Console) | Part 2 (WPF) |
 |---------|-----------------|--------------|
@@ -70,21 +61,19 @@ When you run the chatbot, it will:
 | Follow-up Options | No | Yes |
 | Topic Buttons | No | Yes |
 
-### Part 1 - Console Application
+ Part 1 - Console Application
 - Runs in a black command window (like old DOS programs)
 - User types commands like "help", "1", "exit"
 - Focuses on core functionality
 
-### Part 2 - WPF Application
+ Part 2 - WPF Application
 - Runs in a modern window with buttons and chat bubbles
 - User can click buttons OR type questions
 - Includes ALL advanced features
 
----
+TECHNICAL REQUIREMENTS
 
-## TECHNICAL REQUIREMENTS
-
-### What You Need Before Starting
+What You Need Before Starting
 
 | Requirement | Specification |
 |-------------|---------------|
@@ -95,7 +84,7 @@ When you run the chatbot, it will:
 | Audio | Speakers or headphones for voice greeting |
 | Storage | At least 100 MB free space |
 
-### How to Install Visual Studio 2022
+ How to Install Visual Studio 2022
 
 Step 1: Go to https://visualstudio.microsoft.com/
 Step 2: Download "Visual Studio 2022 Community" (free)
@@ -104,11 +93,9 @@ Step 4: Select ".NET desktop development" workload
 Step 5: Click "Install"
 Step 6: Wait for installation to complete (may take 10-20 minutes)
 
----
+INSTALLATION GUIDE
 
-## INSTALLATION GUIDE
-
-### Step 1: Get the Code
+Step 1: Get the Code
 
 Option A - Download ZIP (Easiest for beginners):
 
@@ -122,7 +109,7 @@ Option B - Clone with Git (For version control):
 git clone https://github.com/yourusername/CybersecurityChatbot.git
 cd CybersecurityChatbot
 
-### Step 2: Open the Project in Visual Studio
+ Step 2: Open the Project in Visual Studio
 
 1. Open Visual Studio 2022
 2. Click "File" then "Open" then "Project/Solution"
@@ -130,7 +117,7 @@ cd CybersecurityChatbot
 4. Select "CybersecurityChatbot.sln"
 5. Click "Open"
 
-### Step 3: Create the Voice Greeting File
+ Step 3: Create the Voice Greeting File
 
 You need to create a greeting.wav file with your voice.
 
@@ -149,7 +136,7 @@ Method 2 - Use Online Text-to-Speech:
 3. Download as WAV format
 4. Rename the file to "greeting.wav"
 
-### Step 4: Add Audio File to Part 1 (Console)
+ Step 4: Add Audio File to Part 1 (Console)
 
 1. In Solution Explorer, right-click "CybersecurityChatbotConsole"
 2. Click "Add" then "New Folder"
@@ -162,7 +149,7 @@ Method 2 - Use Online Text-to-Speech:
 9. Press F4 to open Properties
 10. Set "Copy to Output Directory" = "Copy if newer"
 
-### Step 5: Add Audio File to Part 2 (WPF)
+ Step 5: Add Audio File to Part 2 (WPF)
 
 1. In Solution Explorer, right-click "CybersecurityChatbotWPF"
 2. Click "Add" then "New Folder"
@@ -175,35 +162,31 @@ Method 2 - Use Online Text-to-Speech:
 9. Press F4 to open Properties
 10. Set "Copy to Output Directory" = "Copy if newer"
 
-### Step 6: Build the Solution
+ Step 6: Build the Solution
 
 1. Click "Build" menu
 2. Click "Build Solution" (or press Ctrl+Shift+B)
 3. Look for "Build succeeded" in bottom left corner
 
----
+ HOW TO RUN THE PROGRAM
 
-## HOW TO RUN THE PROGRAM
-
-### Running Part 1 (Console Application)
+Running Part 1 (Console Application)
 
 1. In Solution Explorer, right-click "CybersecurityChatbotConsole"
 2. Click "Set as Startup Project" (makes it bold)
 3. Press F5 (or click "Debug" then "Start Debugging")
 4. The console window will open with the chatbot
 
-### Running Part 2 (WPF Application)
+ Running Part 2 (WPF Application)
 
 1. In Solution Explorer, right-click "CybersecurityChatbotWPF"
 2. Click "Set as Startup Project" (makes it bold)
 3. Press F5 (or click "Debug" then "Start Debugging")
 4. The GUI window will open with the chatbot
 
----
+ HOW TO USE THE CHATBOT
 
-## HOW TO USE THE CHATBOT
-
-### Part 1 - Console Application
+ Part 1 - Console Application
 
 What you will see when it starts:
 
@@ -267,7 +250,7 @@ Questions you can ask:
 | I'm worried about viruses | Shows malware protection info |
 | How to protect privacy? | Shows privacy protection tips |
 
-### Part 2 - WPF Application (GUI)
+Part 2 - WPF Application (GUI)
 
 What you will see when it starts:
 
@@ -333,9 +316,8 @@ Bot: Another important tip: Scammers often create urgency.
       
       [More Tips] [Back to Menu]
 
----
 
-## COMPLETE CODE STRUCTURE
+ COMPLETE CODE STRUCTURE
 
 ### Part 1 - Console Application Files
 
@@ -368,7 +350,7 @@ CybersecurityChatbotConsole/
 └── audio/
     └── greeting.wav (your voice recording)
 
-### Part 2 - WPF Application Files
+Part 2 - WPF Application Files
 
 CybersecurityChatbotWPF/
 │
@@ -395,9 +377,9 @@ CybersecurityChatbotWPF/
 
 ---
 
-## FEATURES EXPLAINED IN DETAIL
+FEATURES EXPLAINED IN DETAIL
 
-### 1. Voice Greeting
+ 1. Voice Greeting
 
 What it does: Plays a welcome message when the application starts
 
@@ -418,7 +400,7 @@ mediaPlayer.Play();  // Plays without waiting
 
 Why it's important: Makes the chatbot feel personal and welcoming
 
-### 2. ASCII Art Logo
+ 2. ASCII Art Logo
 
 What it does: Displays a text-based logo at the top
 
@@ -429,7 +411,7 @@ How it works:
 
 Why it's important: Makes the application look professional
 
-### 3. Typing Effect
+ 3. Typing Effect
 
 What it does: Bot types messages character by character
 
@@ -443,7 +425,7 @@ for (int i = 0; i <= message.Length; i++)
 
 Why it's important: Simulates natural conversation, feels more human
 
-### 4. Keyword Recognition
+ 4. Keyword Recognition
 
 What it does: Bot understands what topic you want
 
@@ -461,7 +443,7 @@ Keywords recognized:
 - Malware: virus, malware, antivirus, ransomware
 - Browsing: browse, internet, website, https, wifi
 
-### 5. Random Responses
+ 5. Random Responses
 
 What it does: Gives different tips each time you ask
 
@@ -481,7 +463,7 @@ string response = passwordResponses[index];
 
 Why it's important: Prevents repetitive answers, keeps users engaged
 
-### 6. Memory Feature
+ 6. Memory Feature
 
 What it does: Remembers user information
 
@@ -504,7 +486,7 @@ What it remembers:
 - User's name
 - Topics the user is interested in
 
-### 7. Sentiment Detection
+ 7. Sentiment Detection
 
 What it does: Detects user's mood and responds appropriately
 
@@ -535,7 +517,7 @@ Different responses by sentiment:
 | Curious | "Great question! I'm glad you're curious..." |
 | Positive | "I'm happy to help! Here's what you need to know..." |
 
-### 8. Follow-up Options
+ 8. Follow-up Options
 
 What it does: Shows buttons for more information after each topic
 
@@ -564,18 +546,16 @@ Follow-up buttons by topic:
 | Privacy | More Tips, Social Media, App Permissions, Back to Menu |
 | Malware | More Tips, Infection Signs, Antivirus, Back to Menu |
 
----
-
-## STRING MANIPULATION TECHNIQUES
+ STRING MANIPULATION TECHNIQUES
 
 This project demonstrates extensive string manipulation. Here's every technique used:
 
-### 1. String Concatenation (+)
+ 1. String Concatenation (+)
 
 string greeting = "Hello " + userName + "!";
 string fullMessage = part1 + " " + part2 + " " + part3;
 
-### 2. StringBuilder (for efficiency)
+ 2. StringBuilder (for efficiency)
 
 StringBuilder builder = new StringBuilder();
 builder.Append("Welcome ");
@@ -583,27 +563,27 @@ builder.Append(userName);
 builder.Append(" to the chatbot!");
 string result = builder.ToString();
 
-### 3. String.Contains() for keyword detection
+ 3. String.Contains() for keyword detection
 
 if (userInput.Contains("password"))
 if (userInput.Contains("phishing"))
 
-### 4. String.ToLower() for case-insensitive matching
+4. String.ToLower() for case-insensitive matching
 
 string cleanInput = userInput.ToLower();
 string lowerSearch = searchTerm.ToLower();
 
-### 5. String.IsNullOrWhiteSpace() for validation
+ 5. String.IsNullOrWhiteSpace() for validation
 
 if (string.IsNullOrWhiteSpace(userName))
 if (string.IsNullOrWhiteSpace(userInput))
 
-### 6. String.Replace() for personalization
+ 6. String.Replace() for personalization
 
 string response = "Hello {userName}!";
 response = response.Replace("{userName}", actualName);
 
-### 7. String.Substring() for typing effect
+ 7. String.Substring() for typing effect
 
 for (int i = 0; i < message.Length; i++)
 {
@@ -611,40 +591,40 @@ for (int i = 0; i < message.Length; i++)
     Console.Write(partial);
 }
 
-### 8. String.Length property
+ 8. String.Length property
 
 int nameLength = userName.Length;
 int messageLength = message.Length;
 
-### 9. new string(char, count) for borders
+ 9. new string(char, count) for borders
 
 string line = new string('=', 50);
 string border = new string('-', 60);
 
-### 10. Path.Combine() for file paths
+ 10. Path.Combine() for file paths
 
 string audioPath = Path.Combine(baseDir, "audio", "greeting.wav");
 
-### 11. String.Split() for parsing
+ 11. String.Split() for parsing
 
 string[] parts = input.Split(new[] { "interested in" }, StringSplitOptions.None);
 string topic = parts[1].Trim();
 
-### 12. String.Join() for combining
+ 12. String.Join() for combining
 
 string[] words = { "Hello", userName, "!" };
 string sentence = string.Join(" ", words);
 
-### 13. String.PadRight() for alignment
+ 13. String.PadRight() for alignment
 
 string aligned = text.PadRight(50);
 Console.WriteLine("| " + aligned + " |");
 
-### 14. Char.ToUpper() for capitalization
+ 14. Char.ToUpper() for capitalization
 
 string capitalized = char.ToUpper(name[0]) + name.Substring(1).ToLower();
 
-### 15. No Hardcoded Numbers Pattern
+ 15. No Hardcoded Numbers Pattern
 
 // Instead of: int delay = 1000;
 int delay = ConvertStringToInt("1000");
@@ -659,11 +639,10 @@ private int ConvertStringToInt(string numberString)
     return int.Parse(numberString);
 }
 
----
 
-## TESTING GUIDE
+ TESTING GUIDE
 
-### Test Part 1 (Console Application)
+ Test Part 1 (Console Application)
 
 | Test | What to do | Expected Result |
 |------|------------|-----------------|
@@ -679,7 +658,7 @@ private int ConvertStringToInt(string numberString)
 | 10 | Type "phishing" | Shows phishing awareness information |
 | 11 | Type "exit" | Shows goodbye message, program closes |
 
-### Test Part 2 (WPF Application)
+Test Part 2 (WPF Application)
 
 | Test | What to do | Expected Result |
 |------|------------|-----------------|
@@ -695,127 +674,7 @@ private int ConvertStringToInt(string numberString)
 | 10 | Click CLEAR button | Conversation resets |
 | 11 | Type random words not related | Shows helpful message with suggestions |
 
----
-
-## GITHUB SETUP GUIDE
-
-### Step 1: Initialize Git Repository
-
-cd CybersecurityChatbot
-git init
-git add .
-git commit -m "Initial commit: Project structure setup"
-
-### Step 2: Create GitHub Repository
-
-1. Go to https://github.com
-2. Sign in to your account
-3. Click the "+" icon then "New repository"
-4. Repository name: CybersecurityChatbot
-5. Description: "Cybersecurity Awareness Chatbot for South African Citizens"
-6. Keep it Public
-7. Do NOT initialize with README (you have one already)
-8. Click "Create repository"
-
-### Step 3: Connect Local to GitHub
-
-git remote add origin https://github.com/YOUR_USERNAME/CybersecurityChatbot.git
-git branch -M main
-git push -u origin main
-
-### Step 4: Make 6+ Commits (Required)
-
-# Commit 1
-git add .
-git commit -m "Initial commit: Project structure setup"
-git push
-
-# Commit 2
-git add UIHelper.cs AudioService.cs
-git commit -m "Added UIHelper with ASCII art and AudioService for voice greeting"
-git push
-
-# Commit 3
-git add Chatbot.cs
-git commit -m "Implemented Chatbot with keyword recognition and conversation loop"
-git push
-
-# Commit 4
-git add Program.cs
-git commit -m "Added Program.cs entry point with console configuration"
-git push
-
-# Commit 5 (Add Part 2)
-git add CybersecurityChatbotWPF/
-git commit -m "Added Part 2 WPF GUI project with basic interface"
-git push
-
-# Commit 6
-git add MainWindow.xaml.cs ChatbotEngine.cs
-git commit -m "Added sentiment detection and memory features to WPF"
-git push
-
-### Step 5: Create GitHub Actions CI Workflow
-
-File location: .github/workflows/build.yml
-
-name: Build and Test
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build:
-    runs-on: windows-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.1
-    
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.1
-    
-    - name: Restore NuGet packages
-      run: nuget restore CybersecurityChatbot.sln
-    
-    - name: Build Console App
-      run: msbuild CybersecurityChatbotConsole/CybersecurityChatbotConsole.csproj /p:Configuration=Release
-    
-    - name: Build WPF App
-      run: msbuild CybersecurityChatbotWPF/CybersecurityChatbotWPF.csproj /p:Configuration=Release
-
-How to add this file:
-1. In your project folder, create a folder called ".github"
-2. Inside ".github", create a folder called "workflows"
-3. Inside "workflows", create a file called "build.yml"
-4. Copy the YAML code above into the file
-5. Commit and push to GitHub
-
-### Step 6: Create 2+ Releases (Required)
-
-1. Go to your GitHub repository
-2. Click "Releases" on the right side
-3. Click "Create a new release"
-4. Choose a tag: v1.0.0
-5. Title: "Part 1 Complete - Console Application"
-6. Description: "First release with console chatbot, voice greeting, ASCII art"
-7. Click "Publish release"
-
-8. Create second release:
-9. Click "Create a new release"
-10. Choose a tag: v2.0.0
-11. Title: "Part 2 Complete - WPF GUI Application"
-12. Description: "Second release with WPF GUI, sentiment detection, memory"
-13. Click "Publish release"
-
----
-
-## COMMON PROBLEMS AND SOLUTIONS
+COMMON PROBLEMS AND SOLUTIONS
 
 | Problem | Cause | Solution |
 |---------|-------|----------|
@@ -834,11 +693,9 @@ How to add this file:
 | Audio file not found in WPF | Wrong path | Use absolute path with BaseDirectory |
 | Dictionary key error | Key doesn't exist | Check with ContainsKey() before accessing |
 
----
+ PROJECT CHECKLIST
 
-## PROJECT CHECKLIST
-
-### Part 1 Requirements
+ Part 1 Requirements
 
 | Requirement | Status | Location |
 |-------------|--------|----------|
@@ -853,7 +710,7 @@ How to add this file:
 | 6+ GitHub commits | Complete | See commit history |
 | CI workflow | Complete | .github/workflows/build.yml |
 
-### Part 2 Requirements
+Part 2 Requirements
 
 | Requirement | Status | Location |
 |-------------|--------|----------|
@@ -870,84 +727,18 @@ How to add this file:
 | Dictionary/Lists used | Complete | responseDatabase, keywordMap |
 | 2+ GitHub releases | Complete | v1.0.0, v2.0.0 |
 
----
 
-## SUBMISSION INFORMATION
+ CONTACT AND SUPPORT
 
-### ARC Submission Requirements
+Student Name: CATHRINE MATLALA LETSOALO
 
-You must submit:
-1. GitHub repository link (ONLY the link, not files)
-2. The link must include:
-   - Complete source code
-   - README.md file
-   - Audio file (greeting.wav)
-   - ASCII art image
-   - Screenshot of successful CI workflow in README
-3. YouTube presentation link (unlisted video)
-
-### YouTube Presentation Requirements
-
-Your video must include:
-1. Voice-over explaining code structure
-2. Explanation of logic used
-3. Demonstration of voice integration
-4. Demonstration of formatting techniques
-5. Screen recording of both Part 1 and Part 2 running
-
-Video length: 10-15 minutes
-
-How to record:
-1. Use OBS Studio (free) or Windows Game Bar (Win+G)
-2. Record your screen showing the code
-3. Record your voice explaining
-4. Upload to YouTube as "Unlisted"
-5. Copy the link for submission
-
----
-
-## CONTACT AND SUPPORT
-
-Student Name: [Your Full Name]
-
-Student Number: [Your Student Number]
+Student Number: ST10477325
 
 Course: PROG6221 - Programming 2B
 
 Institution: The Independent Institute of Education (IIE)
 
 Year: 2026
-
-GitHub Repository: https://github.com/yourusername/CybersecurityChatbot
-
----
-
-## LICENSE
-
-This project is submitted as part of academic coursework for PROG6221.
-
-All rights reserved. No part of this project may be copied or distributed without permission.
-
----
-
-## ACKNOWLEDGMENTS
-
-- The Independent Institute of Education for project guidance
-- South African Department of Cybersecurity for campaign support
-- All cybersecurity resources referenced in the chatbot responses
-
----
-
-## FINAL NOTES
-
-Remember to:
-- Test both Part 1 and Part 2 before submitting
-- Make sure voice greeting works
-- Check that all 6 commits are visible on GitHub
-- Verify CI workflow shows green checkmark
-- Confirm 2 releases are created
-- Include CI screenshot in README
-- Record and upload YouTube presentation
 
 Thank you for using the Cybersecurity Awareness Chatbot!
 
