@@ -2,11 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Cybersecurity Awareness Bot" 
-        Height="700" Width="900"
+        Height="750" Width="1000"
         WindowStartupLocation="CenterScreen"
-        Background="Purple" >
+        Background="Purple">
 
     <Window.Resources>
+        <!-- Send Button Style -->
         <Style x:Key="SendButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="DeepSkyBlue"/>
             <Setter Property="Foreground" Value="White"/>
@@ -22,6 +23,7 @@
             </Style.Triggers>
         </Style>
 
+        <!-- User Message Bubble -->
         <Style x:Key="MessageBubbleUser" TargetType="Border">
             <Setter Property="Background" Value="#4ECDC4"/>
             <Setter Property="CornerRadius" Value="15,15,5,15"/>
@@ -31,13 +33,77 @@
             <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
 
+        <!-- Bot Message Bubble -->
         <Style x:Key="MessageBubbleBot" TargetType="Border">
             <Setter Property="Background" Value="MediumPurple"/>
             <Setter Property="CornerRadius" Value="15,15,15,5"/>
             <Setter Property="Padding" Value="12,8"/>
             <Setter Property="Margin" Value="5"/>
-            <Setter Property="MaxWidth" Value="400"/>
+            <Setter Property="MaxWidth" Value="450"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+
+        <!-- Topic Button Style -->
+        <Style x:Key="TopicButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="DeepSkyBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#45B7D1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Log Button Style (Task 4 - Activity Log) -->
+        <Style x:Key="LogButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Red"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="DarkRed"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Task Button Style (Task 3) -->
+        <Style x:Key="TaskButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Orange"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="DarkOrange"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Follow-up Option Button Style (Task 3 - NLP Follow-ups) -->
+        <Style x:Key="OptionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="SteelBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3498DB"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
 
@@ -76,27 +142,65 @@
         <!-- Input Area -->
         <Border Grid.Row="2" Background="Purple" Padding="10">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <TextBox Name="InputTextBox" Grid.Column="0" 
-                         Background="SteelBlue" Foreground="White" 
-                         BorderBrush="DimGray" BorderThickness="1"
-                         FontSize="14" Padding="10"
-                         TextWrapping="Wrap" MinHeight="40"
-                         KeyDown="InputTextBox_KeyDown"/>
+                <!-- Quick Action Buttons Row -->
+                <WrapPanel Grid.Row="0" Margin="0,0,0,5" HorizontalAlignment="Center">
+                    <!-- Cybersecurity Topics -->
+                    <Button Content="1. Password Safety" Style="{StaticResource TopicButtonStyle}"
+                            Click="TopicButton_Click" Tag="password"/>
+                    <Button Content="2. Phishing Awareness" Style="{StaticResource TopicButtonStyle}"
+                            Click="TopicButton_Click" Tag="phishing"/>
+                    <Button Content="3. Safe Browsing" Style="{StaticResource TopicButtonStyle}"
+                            Click="TopicButton_Click" Tag="safebrowsing"/>
+                    <Button Content="4. Privacy Protection" Style="{StaticResource TopicButtonStyle}"
+                            Click="TopicButton_Click" Tag="privacy"/>
+                    <Button Content="5. Malware Prevention" Style="{StaticResource TopicButtonStyle}"
+                            Click="TopicButton_Click" Tag="malware"/>
+                    <Button Content="6. General Tips" Style="{StaticResource TopicButtonStyle}"
+                            Click="TopicButton_Click" Tag="general"/>
 
-                <Button Grid.Column="1" Content="SEND" 
-                        Style="{StaticResource SendButtonStyle}"
-                        Click="SendButton_Click" Width="80"/>
+                    <!-- Separator -->
+                    <TextBlock Text="|" Foreground="White" FontSize="16" Margin="5,0,5,0" VerticalAlignment="Center"/>
 
-                <Button Grid.Column="2" Content="CLEAR" 
-                        Style="{StaticResource SendButtonStyle}"
-                        Click="ClearButton_Click" Width="80" 
-                        Background="Red"/>
+                    <!-- Task 3: Task Management Buttons -->
+                    <Button Content="Show My Tasks" Style="{StaticResource TaskButtonStyle}"
+                            Click="ShowTasksButton_Click"/>
+                    <Button Content="Show My Reminders" Style="{StaticResource TaskButtonStyle}"
+                            Click="ShowRemindersButton_Click"/>
+
+                    <!-- Task 4: Activity Log Button -->
+                    <Button Content="Show Activity Log" Style="{StaticResource LogButtonStyle}"
+                            Click="ShowLogButton_Click"/>
+                </WrapPanel>
+
+                <!-- Input Row -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Name="InputTextBox" Grid.Column="0" 
+                             Background="SteelBlue" Foreground="White" 
+                             BorderBrush="DimGray" BorderThickness="1"
+                             FontSize="14" Padding="10"
+                             TextWrapping="Wrap" MinHeight="40"
+                             KeyDown="InputTextBox_KeyDown"/>
+
+                    <Button Grid.Column="1" Content="SEND" 
+                            Style="{StaticResource SendButtonStyle}"
+                            Click="SendButton_Click" Width="80"/>
+
+                    <Button Grid.Column="2" Content="CLEAR" 
+                            Style="{StaticResource SendButtonStyle}"
+                            Click="ClearButton_Click" Width="80" 
+                            Background="Red"/>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

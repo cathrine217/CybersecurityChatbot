@@ -11,6 +11,10 @@ namespace CybersecurityChatbotWPF
         private Random random;
         private string lastTopic = "";
 
+        private int Zero() => ConvertStringToInt("0");
+        private int One() => ConvertStringToInt("1");
+        private int ConvertStringToInt(string numberString) => int.Parse(numberString);
+
         public ChatbotEngine()
         {
             random = new Random();
@@ -22,7 +26,8 @@ namespace CybersecurityChatbotWPF
         {
             responseDatabase = new Dictionary<string, List<string>>();
 
-            var passwordResponses = new List<string>
+            // Password responses
+            List<string> passwordResponses = new List<string>
             {
                 "Use strong passwords with 12+ characters mixing uppercase, lowercase, numbers, and symbols!",
                 "Never reuse passwords across multiple accounts - use a password manager!",
@@ -31,7 +36,8 @@ namespace CybersecurityChatbotWPF
             };
             responseDatabase.Add("password", passwordResponses);
 
-            var phishingResponses = new List<string>
+            // Phishing responses
+            List<string> phishingResponses = new List<string>
             {
                 "Always check email sender addresses carefully - scammers use lookalike domains!",
                 "Never click links in suspicious emails. Hover to see the actual URL first!",
@@ -40,16 +46,18 @@ namespace CybersecurityChatbotWPF
             };
             responseDatabase.Add("phishing", phishingResponses);
 
-            var privacyResponses = new List<string>
+            // Privacy responses
+            List<string> privacyResponses = new List<string>
             {
                 "Review your social media privacy settings regularly!",
                 "Limit what personal info you share publicly online.",
                 "Use privacy-focused browsers and search engines.",
-                "Check app permissions regularly."
+                "Check app permissions regularly!"
             };
             responseDatabase.Add("privacy", privacyResponses);
 
-            var malwareResponses = new List<string>
+            // Malware responses
+            List<string> malwareResponses = new List<string>
             {
                 "Keep your antivirus software updated and run regular scans!",
                 "Don't download software from untrusted websites.",
@@ -58,12 +66,23 @@ namespace CybersecurityChatbotWPF
             };
             responseDatabase.Add("malware", malwareResponses);
 
-            var generalResponses = new List<string>
+            // Safe Browsing responses
+            List<string> safeBrowsingResponses = new List<string>
+            {
+                "Look for HTTPS and the padlock icon before entering sensitive data!",
+                "Avoid using public Wi-Fi for banking or sensitive transactions.",
+                "Use a VPN when connecting to public networks.",
+                "Clear your browser cookies and cache regularly."
+            };
+            responseDatabase.Add("safebrowsing", safeBrowsingResponses);
+
+            // General Tips responses
+            List<string> generalResponses = new List<string>
             {
                 "Always backup your important data regularly!",
                 "Keep all your software updated for security patches.",
-                "Use a VPN when connecting to public Wi-Fi.",
-                "Be careful what you share on social media!"
+                "Be careful what you share on social media!",
+                "Use different passwords for different accounts."
             };
             responseDatabase.Add("general", generalResponses);
         }
@@ -71,97 +90,110 @@ namespace CybersecurityChatbotWPF
         private void InitializeKeywordMap()
         {
             keywordMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
             keywordMap.Add("password", "password");
             keywordMap.Add("passphrase", "password");
+            keywordMap.Add("pass", "password");
             keywordMap.Add("phish", "phishing");
             keywordMap.Add("phishing", "phishing");
+            keywordMap.Add("scam", "phishing");
+            keywordMap.Add("fraud", "phishing");
             keywordMap.Add("privacy", "privacy");
+            keywordMap.Add("private", "privacy");
             keywordMap.Add("malware", "malware");
             keywordMap.Add("virus", "malware");
-            keywordMap.Add("scam", "phishing");
+            keywordMap.Add("ransomware", "malware");
+            keywordMap.Add("browse", "safebrowsing");
+            keywordMap.Add("internet", "safebrowsing");
+            keywordMap.Add("website", "safebrowsing");
+            keywordMap.Add("https", "safebrowsing");
+            keywordMap.Add("wifi", "safebrowsing");
             keywordMap.Add("tip", "general");
             keywordMap.Add("advice", "general");
-            keywordMap.Add("safe browsing", "general");
-            keywordMap.Add("internet", "general");
+        }
+
+        public string GetTopicResponse(string topic, string userName)
+        {
+            if (responseDatabase.ContainsKey(topic))
+            {
+                lastTopic = topic;
+                List<string> responses = responseDatabase[topic];
+                return responses[random.Next(responses.Count)];
+            }
+            return "I have information on that topic! Type a number 1-6 to see available topics.";
         }
 
         public async Task<string> GetResponseAsync(string userInput, string sentiment,
             Dictionary<string, string> memory, string userName)
         {
-            await Task.Delay(100);
+            await Task.Delay(OneHundred());
+
+            string lowerInput = userInput.ToLower();
 
             // Check for follow-up requests
-            if (userInput.ToLower().Contains("another tip") ||
-                userInput.ToLower().Contains("tell me more"))
+            if (ContainsAny(lowerInput, new[] { "another tip", "tell me more", "more" }))
             {
                 if (!string.IsNullOrEmpty(lastTopic) && responseDatabase.ContainsKey(lastTopic))
                 {
-                    var responses = responseDatabase[lastTopic];
-                    return responses[random.Next(responses.Count)] + " Would you like another tip?";
+                    List<string> responses = responseDatabase[lastTopic];
+                    return responses[random.Next(responses.Count)];
                 }
             }
 
-            // Check for memory usage
-            if (memory.ContainsKey("name") && userInput.ToLower().Contains("my name"))
+            // Check for memory - name recall
+            if (memory.ContainsKey("name") && ContainsAny(lowerInput, new[] { "my name", "remember me" }))
             {
-                return "I remember! You said your name is " + memory["name"] +
-                    ". How can I help you with cybersecurity?";
+                return "I remember! You said your name is " + memory["name"] + "!";
             }
 
-            if (memory.ContainsKey("interest") && userInput.ToLower().Contains("remember"))
+            // Check for memory - interest recall
+            if (memory.ContainsKey("interest") && ContainsAny(lowerInput, new[] { "remember", "interested" }))
             {
-                return "As someone interested in " + memory["interest"] +
-                    ", you might want to learn more about keeping that aspect secure!";
+                return "As someone interested in " + memory["interest"] + ", you might want to learn more about that!";
             }
 
-            // Keyword matching
-            string matchedTopic = null;
-            foreach (var kvp in keywordMap)
-            {
-                if (userInput.ToLower().Contains(kvp.Key))
-                {
-                    matchedTopic = kvp.Value;
-                    lastTopic = matchedTopic;
-                    break;
-                }
-            }
-
-            // Response based on matched topic
-            if (matchedTopic != null && responseDatabase.ContainsKey(matchedTopic))
-            {
-                var responses = responseDatabase[matchedTopic];
-                string baseResponse = responses[random.Next(responses.Count)];
-                return AdjustResponseForSentiment(baseResponse, sentiment, userName);
-            }
-
-            // Help response
-            if (userInput.ToLower().Contains("help") || userInput.ToLower().Contains("menu"))
+            // Check for menu/help
+            if (ContainsAny(lowerInput, new[] { "menu", "help", "options" }))
             {
                 return GetHelpMessage();
             }
 
             // Greeting response
-            if (ContainsAny(userInput, new[] { "hello", "hi", "hey" }))
+            if (ContainsAny(lowerInput, new[] { "hello", "hi", "hey", "greetings" }))
             {
-                return "Hello " + userName + "! How can I help you stay safe online today?";
+                return "Hello " + userName + "! Type 'menu' to see all topics I can help you with!";
             }
 
             // Thank you response
-            if (ContainsAny(userInput, new[] { "thank", "thanks" }))
+            if (ContainsAny(lowerInput, new[] { "thank", "thanks" }))
             {
                 return "You're welcome, " + userName + "! Stay safe online!";
             }
 
-            // Default response
-            return "I'm not sure I understand. Can you try rephrasing? " +
-                   "Ask about passwords, phishing, privacy, or malware protection!";
+            // Keyword matching
+            foreach (var kvp in keywordMap)
+            {
+                if (lowerInput.Contains(kvp.Key))
+                {
+                    lastTopic = kvp.Value;
+                    List<string> responses = responseDatabase[kvp.Value];
+                    return AdjustResponseForSentiment(responses[random.Next(responses.Count)], sentiment, userName);
+                }
+            }
+
+            return "I'm not sure I understand. Try asking about passwords, phishing, or privacy! You can also say 'Add a task' or 'Remind me'.";
+        }
+
+        private int OneHundred()
+        {
+            return ConvertStringToInt("100");
         }
 
         private bool ContainsAny(string input, string[] terms)
         {
             foreach (string term in terms)
             {
-                if (input.ToLower().Contains(term))
+                if (input.Contains(term))
                     return true;
             }
             return false;
@@ -171,36 +203,26 @@ namespace CybersecurityChatbotWPF
         {
             if (sentiment == "worried")
             {
-                return "It's completely normal to feel concerned, " + userName +
-                    ". " + response + " Remember, being aware is the first step to staying safe!";
+                return "It's completely normal to feel concerned, " + userName + ". " + response;
             }
             else if (sentiment == "frustrated")
             {
-                return "I understand cybersecurity can be frustrating, " + userName +
-                    ". Let me simplify: " + response;
+                return "I understand this can be frustrating. Let me simplify: " + response;
             }
             else if (sentiment == "curious")
             {
-                return "Great question, " + userName +
-                    "! I'm glad you're curious about staying safe online. " + response;
+                return "Great question! I'm glad you're curious. " + response;
             }
-            else if (sentiment == "positive")
-            {
-                return "I'm happy to help, " + userName + "! " + response;
-            }
-
             return response;
         }
 
         private string GetHelpMessage()
         {
-            return "I can help you with:\n" +
-                   "- Password security (ask about passwords)\n" +
-                   "- Phishing scams (ask about phishing)\n" +
-                   "- Privacy protection (ask about privacy)\n" +
-                   "- Malware prevention (ask about malware)\n" +
-                   "- General cybersecurity tips (ask for tips)\n\n" +
-                   "What would you like to learn about?";
+            return "AVAILABLE TOPICS:\n" +
+                   "1. PASSWORD SAFETY\n2. PHISHING AWARENESS\n3. SAFE BROWSING\n" +
+                   "4. PRIVACY PROTECTION\n5. MALWARE PREVENTION\n6. GENERAL TIPS\n\n" +
+                   "TASK FEATURES:\n- Add a task to...\n- Remind me to...\n- Show my tasks\n" +
+                   "- Show activity log\n\nType a number 1-6 or ask me a question!";
         }
     }
 }
