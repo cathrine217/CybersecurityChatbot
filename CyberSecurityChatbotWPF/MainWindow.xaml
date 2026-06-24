@@ -59,7 +59,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Log Button Style (Task 4 - Activity Log) -->
+        <!-- Log Button Style -->
         <Style x:Key="LogButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Red"/>
             <Setter Property="Foreground" Value="White"/>
@@ -75,7 +75,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Task Button Style (Task 3) -->
+        <!-- Task Button Style -->
         <Style x:Key="TaskButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Orange"/>
             <Setter Property="Foreground" Value="White"/>
@@ -91,7 +91,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Follow-up Option Button Style (Task 3 - NLP Follow-ups) -->
+        <!-- Option Button Style -->
         <Style x:Key="OptionButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="SteelBlue"/>
             <Setter Property="Foreground" Value="White"/>
@@ -149,7 +149,6 @@
 
                 <!-- Quick Action Buttons Row -->
                 <WrapPanel Grid.Row="0" Margin="0,0,0,5" HorizontalAlignment="Center">
-                    <!-- Cybersecurity Topics -->
                     <Button Content="1. Password Safety" Style="{StaticResource TopicButtonStyle}"
                             Click="TopicButton_Click" Tag="password"/>
                     <Button Content="2. Phishing Awareness" Style="{StaticResource TopicButtonStyle}"
@@ -163,16 +162,12 @@
                     <Button Content="6. General Tips" Style="{StaticResource TopicButtonStyle}"
                             Click="TopicButton_Click" Tag="general"/>
 
-                    <!-- Separator -->
                     <TextBlock Text="|" Foreground="White" FontSize="16" Margin="5,0,5,0" VerticalAlignment="Center"/>
 
-                    <!-- Task 3: Task Management Buttons -->
                     <Button Content="Show My Tasks" Style="{StaticResource TaskButtonStyle}"
                             Click="ShowTasksButton_Click"/>
                     <Button Content="Show My Reminders" Style="{StaticResource TaskButtonStyle}"
                             Click="ShowRemindersButton_Click"/>
-
-                    <!-- Task 4: Activity Log Button -->
                     <Button Content="Show Activity Log" Style="{StaticResource LogButtonStyle}"
                             Click="ShowLogButton_Click"/>
                 </WrapPanel>

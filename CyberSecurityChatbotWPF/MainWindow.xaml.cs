@@ -1,187 +1,804 @@
-﻿< Window x: Class = "CybersecurityChatbotWPF.MainWindow"
-        xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns: x = "http://schemas.microsoft.com/winfx/2006/xaml"
-        Title = "Cybersecurity Awareness Bot"
-        Height = "750" Width = "1000"
-        WindowStartupLocation = "CenterScreen"
-        Background = "Purple" >
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
-    < Window.Resources >
-        < !--Send Button Style -->
-        <Style x:Key = "SendButtonStyle" TargetType = "Button" >
-            < Setter Property = "Background" Value = "DeepSkyBlue" />
-            < Setter Property = "Foreground" Value = "White" />
-            < Setter Property = "FontSize" Value = "14" />
-            < Setter Property = "FontWeight" Value = "Bold" />
-            < Setter Property = "Padding" Value = "15,10" />
-            < Setter Property = "Margin" Value = "5" />
-            < Setter Property = "Cursor" Value = "Hand" />
-            < Style.Triggers >
-                < Trigger Property = "IsMouseOver" Value = "True" >
-                    < Setter Property = "Background" Value = "#45B7D1" />
-                </ Trigger >
-            </ Style.Triggers >
-        </ Style >
+namespace CybersecurityChatbotWPF
+{
+    public partial class MainWindow : Window
+    {
+        private ChatbotEngine chatbot;
+        private Dictionary<string, string> userMemory;
+        private string userName = "";
+        private int interactionCount = 0;
+        private MediaPlayer mediaPlayer;
+        private string currentTopic = "";
 
-        < !--User Message Bubble(Your messages) -->
-        < Style x: Key = "MessageBubbleUser" TargetType = "Border" >
-            < Setter Property = "Background" Value = "#4ECDC4" />
-            < Setter Property = "CornerRadius" Value = "15,15,5,15" />
-            < Setter Property = "Padding" Value = "12,8" />
-            < Setter Property = "Margin" Value = "5" />
-            < Setter Property = "MaxWidth" Value = "400" />
-            < Setter Property = "HorizontalAlignment" Value = "Right" />
-        </ Style >
+        // Task 3: Task and Reminder Lists
+        private List<TaskItem> taskList;
+        private List<ReminderItem> reminderList;
+        private int taskIdCounter = 1;
+        private int reminderIdCounter = 1;
 
-        < !--Bot Message Bubble -->
-        <Style x:Key = "MessageBubbleBot" TargetType = "Border" >
-            < Setter Property = "Background" Value = "MediumPurple" />
-            < Setter Property = "CornerRadius" Value = "15,15,15,5" />
-            < Setter Property = "Padding" Value = "12,8" />
-            < Setter Property = "Margin" Value = "5" />
-            < Setter Property = "MaxWidth" Value = "450" />
-            < Setter Property = "HorizontalAlignment" Value = "Left" />
-        </ Style >
+        // Task 4: Activity Log
+        private List<ActivityLogEntry> activityLog;
 
-        < !--Topic Button Style -->
-        <Style x:Key = "TopicButtonStyle" TargetType = "Button" >
-            < Setter Property = "Background" Value = "DeepSkyBlue" />
-            < Setter Property = "Foreground" Value = "White" />
-            < Setter Property = "FontSize" Value = "12" />
-            < Setter Property = "FontWeight" Value = "Bold" />
-            < Setter Property = "Padding" Value = "10,8" />
-            < Setter Property = "Margin" Value = "5" />
-            < Setter Property = "Cursor" Value = "Hand" />
-            < Style.Triggers >
-                < Trigger Property = "IsMouseOver" Value = "True" >
-                    < Setter Property = "Background" Value = "#45B7D1" />
-                </ Trigger >
-            </ Style.Triggers >
-        </ Style >
+        // Helper methods to avoid hardcoded numbers
+        private int Zero() => ConvertStringToInt("0");
+        private int One() => ConvertStringToInt("1");
+        private int Two() => ConvertStringToInt("2");
+        private int Three() => ConvertStringToInt("3");
+        private int Five() => ConvertStringToInt("5");
+        private int Seven() => ConvertStringToInt("7");
+        private int Ten() => ConvertStringToInt("10");
+        private int Eleven() => ConvertStringToInt("11");
+        private int Thirteen() => ConvertStringToInt("13");
+        private int Fifteen() => ConvertStringToInt("15");
 
-        < !--Log Button Style -->
-        <Style x:Key = "LogButtonStyle" TargetType = "Button" >
-            < Setter Property = "Background" Value = "Red" />
-            < Setter Property = "Foreground" Value = "White" />
-            < Setter Property = "FontSize" Value = "12" />
-            < Setter Property = "FontWeight" Value = "Bold" />
-            < Setter Property = "Padding" Value = "10,8" />
-            < Setter Property = "Margin" Value = "5" />
-            < Setter Property = "Cursor" Value = "Hand" />
-            < Style.Triggers >
-                < Trigger Property = "IsMouseOver" Value = "True" >
-                    < Setter Property = "Background" Value = "DarkRed" />
-                </ Trigger >
-            </ Style.Triggers >
-        </ Style >
+        private int ConvertStringToInt(string numberString) => int.Parse(numberString);
+        private int Increment(int value) => value + One();
 
-        < !--Task Button Style -->
-        <Style x:Key = "TaskButtonStyle" TargetType = "Button" >
-            < Setter Property = "Background" Value = "Orange" />
-            < Setter Property = "Foreground" Value = "White" />
-            < Setter Property = "FontSize" Value = "12" />
-            < Setter Property = "FontWeight" Value = "Bold" />
-            < Setter Property = "Padding" Value = "10,8" />
-            < Setter Property = "Margin" Value = "5" />
-            < Setter Property = "Cursor" Value = "Hand" />
-            < Style.Triggers >
-                < Trigger Property = "IsMouseOver" Value = "True" >
-                    < Setter Property = "Background" Value = "DarkOrange" />
-                </ Trigger >
-            </ Style.Triggers >
-        </ Style >
-    </ Window.Resources >
+        public MainWindow()
+        {
+            InitializeComponent();
+            InitializeChatbot();
+            InitializeTaskSystem();
+            InitializeActivityLog();
+            PlayVoiceGreeting();
 
-    < Grid >
-        < Grid.RowDefinitions >
-            < RowDefinition Height = "Auto" />
-            < RowDefinition Height = "*" />
-            < RowDefinition Height = "Auto" />
-        </ Grid.RowDefinitions >
+            AddBotMessage("Hello! Welcome to the Cybersecurity Awareness Bot.");
+            AddBotMessage("I'm here to help you stay safe online.");
+            AddBotMessage("I can now help you with TASKS and REMINDERS!");
+            AddBotMessage("Try saying:");
+            AddBotMessage("  - 'Add a task to enable two-factor authentication'");
+            AddBotMessage("  - 'Remind me to update my password tomorrow'");
+            AddBotMessage("  - 'Show my tasks' or 'Show activity log'");
 
-        < !--Header with ASCII Art -->
-        <Border Grid.Row="0" Background="MediumPurple" Padding="15">
-            <StackPanel>
-                <TextBlock Text="╔════════════════════════════════════════════════════════╗" 
-                           Foreground="Purple" FontFamily="Consolas" FontSize="10" 
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="║              CYBERSECURITY AWARENESS BOT               ║" 
-                           Foreground="Purple" FontFamily="Consolas" FontSize="12" 
-                           FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="║            'Stay Safe in the Digital World'              ║" 
-                           Foreground="Purple" FontFamily="Consolas" FontSize="10" 
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="╚════════════════════════════════════════════════════════╝" 
-                           Foreground="Purple" FontFamily="Consolas" FontSize="10" 
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
+            ShowMainMenu();
+            AskForName();
 
-        <!-- Chat Messages Area -->
-        <ScrollViewer Grid.Row="1" Name="MessagesScrollViewer" 
-                      VerticalScrollBarVisibility="Auto" 
-                      Background="MediumPurple">
-            <StackPanel Name="MessagesPanel" Margin="10" Orientation="Vertical"/>
-        </ScrollViewer>
+            AddToActivityLog("Application Started", "Cybersecurity Bot launched successfully");
+        }
 
-        <!-- Input Area -->
-        <Border Grid.Row="2" Background="Purple" Padding="10">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        private void InitializeChatbot()
+        {
+            chatbot = new ChatbotEngine();
+            userMemory = new Dictionary<string, string>();
+            mediaPlayer = new MediaPlayer();
+        }
 
-                <!-- Quick Action Buttons Row -->
-                <WrapPanel Grid.Row="0" Margin="0,0,0,5" HorizontalAlignment="Center">
-                    <Button Content="1. Password Safety" Style="{StaticResource TopicButtonStyle}"
-                            Click="TopicButton_Click" Tag="password"/>
-                    <Button Content="2. Phishing Awareness" Style="{StaticResource TopicButtonStyle}"
-                            Click="TopicButton_Click" Tag="phishing"/>
-                    <Button Content="3. Safe Browsing" Style="{StaticResource TopicButtonStyle}"
-                            Click="TopicButton_Click" Tag="safebrowsing"/>
-                    <Button Content="4. Privacy Protection" Style="{StaticResource TopicButtonStyle}"
-                            Click="TopicButton_Click" Tag="privacy"/>
-                    <Button Content="5. Malware Prevention" Style="{StaticResource TopicButtonStyle}"
-                            Click="TopicButton_Click" Tag="malware"/>
-                    <Button Content="6. General Tips" Style="{StaticResource TopicButtonStyle}"
-                            Click="TopicButton_Click" Tag="general"/>
-                    
-                    <TextBlock Text="|" Foreground="White" FontSize="16" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                    
-                    <Button Content="Show My Tasks" Style="{StaticResource TaskButtonStyle}"
-                            Click="ShowTasksButton_Click"/>
-                    <Button Content="Show My Reminders" Style="{StaticResource TaskButtonStyle}"
-                            Click="ShowRemindersButton_Click"/>
-                    <Button Content="Show Activity Log" Style="{StaticResource LogButtonStyle}"
-                            Click="ShowLogButton_Click"/>
-                </WrapPanel>
+        private void InitializeTaskSystem()
+        {
+            taskList = new List<TaskItem>();
+            reminderList = new List<ReminderItem>();
+        }
 
-                <!-- Input Row -->
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+        private void InitializeActivityLog()
+        {
+            activityLog = new List<ActivityLogEntry>();
+        }
 
-                    <TextBox Name="InputTextBox" Grid.Column="0" 
-                             Background="SteelBlue" Foreground="White" 
-                             BorderBrush="DimGray" BorderThickness="1"
-                             FontSize="14" Padding="10"
-                             TextWrapping="Wrap" MinHeight="40"
-                             KeyDown="InputTextBox_KeyDown"/>
+        private void AddToActivityLog(string actionType, string description)
+        {
+            ActivityLogEntry entry = new ActivityLogEntry
+            {
+                Timestamp = DateTime.Now,
+                ActionType = actionType,
+                Description = description
+            };
 
-                    <Button Grid.Column="1" Content="SEND" 
-                            Style="{StaticResource SendButtonStyle}"
-                            Click="SendButton_Click" Width="80"/>
+            activityLog.Insert(Zero(), entry);
 
-                    <Button Grid.Column="2" Content="CLEAR" 
-                            Style="{StaticResource SendButtonStyle}"
-                            Click="ClearButton_Click" Width="80" 
-                            Background="Red"/>
-                </Grid>
-            </Grid>
-        </Border>
-    </Grid>
-</Window>
+            if (activityLog.Count > Ten())
+            {
+                activityLog.RemoveAt(Ten());
+            }
+        }
+
+        private string GetActivityLogSummary()
+        {
+            if (activityLog.Count == Zero())
+            {
+                return "No actions have been recorded yet. Start by adding tasks or setting reminders!";
+            }
+
+            StringBuilder logBuilder = new StringBuilder();
+            logBuilder.AppendLine("Here is a summary of recent actions:");
+            logBuilder.AppendLine();
+
+            int displayCount = activityLog.Count;
+            if (displayCount > Ten())
+            {
+                displayCount = Ten();
+            }
+
+            for (int i = Zero(); i < displayCount; i = Increment(i))
+            {
+                int logNumber = i + One();
+                ActivityLogEntry entry = activityLog[i];
+                logBuilder.AppendLine(logNumber.ToString() + ". " + entry.ActionType + " - " + entry.Description);
+                logBuilder.AppendLine("   " + entry.Timestamp.ToString("yyyy-MM-dd HH:mm:ss"));
+                logBuilder.AppendLine();
+            }
+
+            if (activityLog.Count > Ten())
+            {
+                logBuilder.AppendLine("Showing the " + Ten().ToString() + " most recent actions. Total actions: " + activityLog.Count.ToString());
+            }
+
+            return logBuilder.ToString();
+        }
+
+        private void PlayVoiceGreeting()
+        {
+            try
+            {
+                string audioPath = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "audio",
+                    "greeting.wav");
+
+                if (File.Exists(audioPath))
+                {
+                    mediaPlayer.Open(new Uri(audioPath, UriKind.Absolute));
+                    mediaPlayer.Play();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddSystemMessage("Voice greeting error: " + ex.Message);
+            }
+        }
+
+        private void ShowMainMenu()
+        {
+            StringBuilder menuBuilder = new StringBuilder();
+            menuBuilder.AppendLine("Here are the topics I can help you with:");
+            menuBuilder.AppendLine();
+            menuBuilder.AppendLine("1. PASSWORD SAFETY - Create and manage strong passwords");
+            menuBuilder.AppendLine("2. PHISHING AWARENESS - Recognize and avoid scams");
+            menuBuilder.AppendLine("3. SAFE BROWSING - Navigate the web securely");
+            menuBuilder.AppendLine("4. PRIVACY PROTECTION - Keep your personal info safe");
+            menuBuilder.AppendLine("5. MALWARE PREVENTION - Protect against viruses");
+            menuBuilder.AppendLine("6. GENERAL TIPS - Overall cybersecurity advice");
+            menuBuilder.AppendLine();
+            menuBuilder.AppendLine("I can also help you with TASKS and REMINDERS!");
+            menuBuilder.AppendLine("Try saying:");
+            menuBuilder.AppendLine("  - 'Add a task to enable two-factor authentication'");
+            menuBuilder.AppendLine("  - 'Remind me to update my password tomorrow'");
+            menuBuilder.AppendLine("  - 'Show my tasks'");
+            menuBuilder.AppendLine("  - 'Show activity log' or 'What have you done for me?'");
+
+            AddBotMessage(menuBuilder.ToString());
+        }
+
+        private void AskForName()
+        {
+            AddBotMessage("Before we continue, may I know your name?");
+        }
+
+        // TASK 3: NLP Simulation
+        private string ProcessNaturalLanguage(string userInput)
+        {
+            string lowerInput = userInput.ToLower();
+
+            if (ContainsAny(lowerInput, new string[] { "add a task", "add task", "create task", "new task", "add to do" }))
+            {
+                return AddTaskFromNLP(userInput);
+            }
+
+            if (ContainsAny(lowerInput, new string[] { "remind me", "set reminder", "create reminder", "add reminder" }))
+            {
+                return AddReminderFromNLP(userInput);
+            }
+
+            if (ContainsAny(lowerInput, new string[] { "show tasks", "my tasks", "list tasks", "what tasks" }))
+            {
+                return ShowAllTasks();
+            }
+
+            if (ContainsAny(lowerInput, new string[] { "show reminders", "my reminders", "list reminders" }))
+            {
+                return ShowAllReminders();
+            }
+
+            if (ContainsAny(lowerInput, new string[] { "activity log", "what have you done", "show log", "recent actions" }))
+            {
+                return GetActivityLogSummary();
+            }
+
+            if (ContainsAny(lowerInput, new string[] { "complete task", "finish task", "mark task done" }))
+            {
+                return CompleteTaskFromNLP(userInput);
+            }
+
+            if (ContainsAny(lowerInput, new string[] { "delete task", "remove task" }))
+            {
+                return DeleteTaskFromNLP(userInput);
+            }
+
+            return null;
+        }
+
+        private string AddTaskFromNLP(string userInput)
+        {
+            string taskDescription = ExtractTaskDescription(userInput);
+
+            if (string.IsNullOrWhiteSpace(taskDescription))
+            {
+                return "What task would you like me to add? Please describe the task.";
+            }
+
+            TaskItem newTask = new TaskItem
+            {
+                Id = taskIdCounter,
+                Description = taskDescription,
+                CreatedDate = DateTime.Now,
+                IsCompleted = false
+            };
+
+            taskList.Add(newTask);
+            taskIdCounter = Increment(taskIdCounter);
+
+            AddToActivityLog("Task Added", "Task added: '" + taskDescription + "'");
+
+            return "Task added: '" + taskDescription + "'. You can ask 'Show my tasks' to see all tasks.";
+        }
+
+        private string ExtractTaskDescription(string userInput)
+        {
+            string lowerInput = userInput.ToLower();
+            string[] taskPhrases = new string[] { "add a task to", "add task to", "create task to",
+                                     "add a task", "add task", "create task", "new task" };
+
+            foreach (string phrase in taskPhrases)
+            {
+                if (lowerInput.Contains(phrase))
+                {
+                    int phraseIndex = lowerInput.IndexOf(phrase);
+                    string afterPhrase = userInput.Substring(phraseIndex + phrase.Length);
+                    return afterPhrase.Trim().TrimStart(new char[] { ' ', 't', 'o', 'f', 'o', 'r' });
+                }
+            }
+
+            return "cybersecurity task";
+        }
+
+        private string AddReminderFromNLP(string userInput)
+        {
+            string reminderText = ExtractReminderText(userInput);
+            string reminderDate = ExtractReminderDate(userInput);
+
+            if (string.IsNullOrWhiteSpace(reminderText))
+            {
+                return "What would you like me to remind you about?";
+            }
+
+            ReminderItem newReminder = new ReminderItem
+            {
+                Id = reminderIdCounter,
+                Description = reminderText,
+                ReminderDate = reminderDate,
+                CreatedDate = DateTime.Now,
+                IsCompleted = false
+            };
+
+            reminderList.Add(newReminder);
+            reminderIdCounter = Increment(reminderIdCounter);
+
+            AddToActivityLog("Reminder Set", "Reminder set: '" + reminderText + "' for " + reminderDate);
+
+            return "Reminder set for '" + reminderText + "' on " + reminderDate +
+                   ". You can ask 'Show my reminders' to see all reminders.";
+        }
+
+        private string ExtractReminderText(string userInput)
+        {
+            string lowerInput = userInput.ToLower();
+            string[] reminderPhrases = new string[] { "remind me to", "set reminder to", "remind me about",
+                                          "set a reminder to", "create reminder to" };
+
+            foreach (string phrase in reminderPhrases)
+            {
+                if (lowerInput.Contains(phrase))
+                {
+                    int phraseIndex = lowerInput.IndexOf(phrase);
+                    string afterPhrase = userInput.Substring(phraseIndex + phrase.Length);
+
+                    string[] dateWords = new string[] { "tomorrow", "today", "next week", "monday", "tuesday", "wednesday",
+                                           "thursday", "friday", "saturday", "sunday" };
+                    string reminderText = afterPhrase;
+                    foreach (string dateWord in dateWords)
+                    {
+                        if (reminderText.ToLower().Contains(dateWord))
+                        {
+                            int dateIndex = reminderText.ToLower().IndexOf(dateWord);
+                            reminderText = reminderText.Substring(Zero(), dateIndex).Trim();
+                            break;
+                        }
+                    }
+                    return reminderText.Trim();
+                }
+            }
+            return userInput;
+        }
+
+        private string ExtractReminderDate(string userInput)
+        {
+            string lowerInput = userInput.ToLower();
+
+            if (lowerInput.Contains("tomorrow"))
+            {
+                return DateTime.Now.AddDays(One()).ToString("yyyy-MM-dd");
+            }
+            if (lowerInput.Contains("next week"))
+            {
+                return DateTime.Now.AddDays(Seven()).ToString("yyyy-MM-dd");
+            }
+
+            return "today";
+        }
+
+        private string ShowAllTasks()
+        {
+            if (taskList.Count == Zero())
+            {
+                return "You have no tasks yet. Try saying: 'Add a task to enable two-factor authentication'";
+            }
+
+            StringBuilder taskBuilder = new StringBuilder();
+            taskBuilder.AppendLine("Here are your tasks:");
+            taskBuilder.AppendLine();
+
+            for (int i = Zero(); i < taskList.Count; i = Increment(i))
+            {
+                TaskItem task = taskList[i];
+                int taskNumber = i + One();
+                string status = task.IsCompleted ? "COMPLETED" : "PENDING";
+                taskBuilder.AppendLine(taskNumber.ToString() + ". " + task.Description + " - " + status);
+                taskBuilder.AppendLine("   Added: " + task.CreatedDate.ToString("yyyy-MM-dd HH:mm"));
+                taskBuilder.AppendLine();
+            }
+
+            return taskBuilder.ToString();
+        }
+
+        private string ShowAllReminders()
+        {
+            if (reminderList.Count == Zero())
+            {
+                return "You have no reminders set. Try saying: 'Remind me to update my password tomorrow'";
+            }
+
+            StringBuilder reminderBuilder = new StringBuilder();
+            reminderBuilder.AppendLine("Here are your reminders:");
+            reminderBuilder.AppendLine();
+
+            for (int i = Zero(); i < reminderList.Count; i = Increment(i))
+            {
+                ReminderItem reminder = reminderList[i];
+                int reminderNumber = i + One();
+                string status = reminder.IsCompleted ? "COMPLETED" : "ACTIVE";
+                reminderBuilder.AppendLine(reminderNumber.ToString() + ". " + reminder.Description + " - " + status);
+                reminderBuilder.AppendLine("   Reminder for: " + reminder.ReminderDate);
+                reminderBuilder.AppendLine();
+            }
+
+            return reminderBuilder.ToString();
+        }
+
+        private string CompleteTaskFromNLP(string userInput)
+        {
+            string lowerInput = userInput.ToLower();
+            int taskNumber = -One();
+
+            for (int i = One(); i <= taskList.Count; i = Increment(i))
+            {
+                if (lowerInput.Contains(i.ToString()))
+                {
+                    taskNumber = i;
+                    break;
+                }
+            }
+
+            if (taskNumber > Zero() && taskNumber <= taskList.Count)
+            {
+                TaskItem task = taskList[taskNumber - One()];
+                task.IsCompleted = true;
+                AddToActivityLog("Task Completed", "Task completed: '" + task.Description + "'");
+                return "Task '" + task.Description + "' has been marked as completed! Good job!";
+            }
+
+            return "Please specify which task to complete. Say 'Show my tasks' to see task numbers.";
+        }
+
+        private string DeleteTaskFromNLP(string userInput)
+        {
+            string lowerInput = userInput.ToLower();
+            int taskNumber = -One();
+
+            for (int i = One(); i <= taskList.Count; i = Increment(i))
+            {
+                if (lowerInput.Contains(i.ToString()))
+                {
+                    taskNumber = i;
+                    break;
+                }
+            }
+
+            if (taskNumber > Zero() && taskNumber <= taskList.Count)
+            {
+                TaskItem task = taskList[taskNumber - One()];
+                taskList.RemoveAt(taskNumber - One());
+                AddToActivityLog("Task Deleted", "Task deleted: '" + task.Description + "'");
+                return "Task '" + task.Description + "' has been deleted.";
+            }
+
+            return "Please specify which task to delete. Say 'Show my tasks' to see task numbers.";
+        }
+
+        private void ShowActivityLog()
+        {
+            string logSummary = GetActivityLogSummary();
+            AddBotMessage(logSummary);
+            AddToActivityLog("Activity Log Viewed", "User requested to view activity log");
+        }
+
+        private async void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            await ProcessUserInput();
+        }
+
+        private async void InputTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                await ProcessUserInput();
+            }
+        }
+
+        private async Task ProcessUserInput()
+        {
+            string userInput = InputTextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(userInput))
+                return;
+
+            // ADD USER MESSAGE TO CHAT
+            AddUserMessage(userInput);
+            InputTextBox.Clear();
+
+            // Check if this is name response
+            if (string.IsNullOrEmpty(userName))
+            {
+                userName = CapitalizeFirstLetter(userInput);
+                userMemory["name"] = userName;
+                AddBotMessage("Nice to meet you, " + userName + "!");
+                AddToActivityLog("User Registered", "User name recorded: " + userName);
+                ShowMainMenu();
+                ScrollToBottom();
+                return;
+            }
+
+            string lowerInput = userInput.ToLower();
+
+            // TASK 3: Try NLP processing first
+            string nlpResponse = ProcessNaturalLanguage(userInput);
+            if (nlpResponse != null)
+            {
+                await TypewriterEffect(nlpResponse);
+                ScrollToBottom();
+                return;
+            }
+
+            // Check for menu number selection (1-6)
+            string topicFromNumber = GetTopicFromNumber(lowerInput);
+            if (topicFromNumber != null)
+            {
+                ProcessTopicSelection(topicFromNumber);
+                ScrollToBottom();
+                return;
+            }
+
+            string sentiment = DetectSentiment(userInput);
+            StoreUserInfo(userInput);
+            string response = await chatbot.GetResponseAsync(userInput, sentiment, userMemory, userName);
+
+            await TypewriterEffect(response);
+
+            interactionCount = Increment(interactionCount);
+            if (interactionCount % Three() == Zero())
+            {
+                await Task.Delay(ConvertStringToInt("1000"));
+                ShowRandomSecurityTip();
+            }
+
+            ScrollToBottom();
+        }
+
+        private string GetTopicFromNumber(string input)
+        {
+            if (input == "1") return "password";
+            if (input == "2") return "phishing";
+            if (input == "3") return "safebrowsing";
+            if (input == "4") return "privacy";
+            if (input == "5") return "malware";
+            if (input == "6") return "general";
+            return null;
+        }
+
+        private void ProcessTopicSelection(string topic)
+        {
+            currentTopic = topic;
+            string response = chatbot.GetTopicResponse(topic, userName);
+            AddBotMessage(response);
+            AddToActivityLog("Topic Selected", "User viewed information about: " + topic);
+        }
+
+        private string CapitalizeFirstLetter(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return input;
+            return char.ToUpper(input[Zero()]) + input.Substring(One()).ToLower();
+        }
+
+        private string DetectSentiment(string input)
+        {
+            string lowerInput = input.ToLower();
+
+            if (ContainsAny(lowerInput, new string[] { "worried", "scared", "nervous", "concerned", "afraid" }))
+                return "worried";
+
+            if (ContainsAny(lowerInput, new string[] { "frustrated", "annoyed", "confused" }))
+                return "frustrated";
+
+            if (ContainsAny(lowerInput, new string[] { "curious", "interested", "tell me" }))
+                return "curious";
+
+            if (ContainsAny(lowerInput, new string[] { "thank", "great", "helpful" }))
+                return "positive";
+
+            return "neutral";
+        }
+
+        private bool ContainsAny(string input, string[] terms)
+        {
+            foreach (string term in terms)
+            {
+                if (input.Contains(term))
+                    return true;
+            }
+            return false;
+        }
+
+        private void StoreUserInfo(string input)
+        {
+            string lowerInput = input.ToLower();
+
+            if (lowerInput.Contains("interested in"))
+            {
+                string[] parts = lowerInput.Split(new string[] { "interested in" }, StringSplitOptions.None);
+                if (parts.Length > One())
+                {
+                    string topic = parts[One()].Trim();
+                    userMemory["interest"] = topic;
+                    AddToActivityLog("Interest Stored", "User interested in: " + topic);
+                }
+            }
+        }
+
+        private async Task TypewriterEffect(string message)
+        {
+            TextBlock textBlock = new TextBlock
+            {
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(5),
+                Foreground = Brushes.White,
+                FontSize = 13
+            };
+
+            Border border = new Border
+            {
+                Style = (Style)FindResource("MessageBubbleBot"),
+                Child = textBlock
+            };
+
+            Dispatcher.Invoke(() => MessagesPanel.Children.Add(border));
+
+            for (int i = Zero(); i <= message.Length; i = Increment(i))
+            {
+                await Task.Delay(15);
+                textBlock.Text = message.Substring(Zero(), i);
+                ScrollToBottom();
+            }
+        }
+
+        private void AddUserMessage(string message)
+        {
+            TextBlock textBlock = new TextBlock
+            {
+                Text = message,
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = Brushes.White,
+                FontSize = 13
+            };
+
+            TextBlock labelBlock = new TextBlock
+            {
+                Text = "You:",
+                Foreground = Brushes.LightGreen,
+                FontWeight = FontWeights.Bold,
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0)
+            };
+
+            StackPanel messagePanel = new StackPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Margin = new Thickness(0, 5, 0, 5)
+            };
+
+            messagePanel.Children.Add(labelBlock);
+
+            Border border = new Border
+            {
+                Style = (Style)FindResource("MessageBubbleUser"),
+                Child = textBlock
+            };
+
+            messagePanel.Children.Add(border);
+
+            Dispatcher.Invoke(() => MessagesPanel.Children.Add(messagePanel));
+            ScrollToBottom();
+        }
+
+        private void AddBotMessage(string message)
+        {
+            TextBlock textBlock = new TextBlock
+            {
+                Text = message,
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = Brushes.White,
+                FontSize = 13
+            };
+
+            TextBlock labelBlock = new TextBlock
+            {
+                Text = "Bot:",
+                Foreground = Brushes.LightBlue,
+                FontWeight = FontWeights.Bold,
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0)
+            };
+
+            StackPanel messagePanel = new StackPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 5, 0, 5)
+            };
+
+            messagePanel.Children.Add(labelBlock);
+
+            Border border = new Border
+            {
+                Style = (Style)FindResource("MessageBubbleBot"),
+                Child = textBlock
+            };
+
+            messagePanel.Children.Add(border);
+
+            Dispatcher.Invoke(() => MessagesPanel.Children.Add(messagePanel));
+            ScrollToBottom();
+        }
+
+        private void AddSystemMessage(string message)
+        {
+            TextBlock textBlock = new TextBlock
+            {
+                Text = "[" + message + "]",
+                Foreground = Brushes.Yellow,
+                FontSize = 11,
+                FontStyle = FontStyles.Italic,
+                TextAlignment = TextAlignment.Center
+            };
+
+            Dispatcher.Invoke(() => MessagesPanel.Children.Add(textBlock));
+            ScrollToBottom();
+        }
+
+        private void ShowRandomSecurityTip()
+        {
+            string[] tips = new string[] {
+                "Remember: Banks will NEVER ask for your password via email!",
+                "Use a unique password for each of your accounts.",
+                "Enable two-factor authentication (2FA) for extra security.",
+                "Always log out of accounts when using public computers.",
+                "Keep your software and antivirus updated regularly.",
+                "Never click on suspicious links in emails or messages.",
+                "Use a password manager to generate and store strong passwords."
+            };
+
+            Random random = new Random();
+            int randomIndex = random.Next(tips.Length);
+            AddBotMessage("Security Tip: " + tips[randomIndex]);
+        }
+
+        private void ScrollToBottom()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                MessagesScrollViewer.ScrollToBottom();
+            }));
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() => MessagesPanel.Children.Clear());
+            AddBotMessage("Conversation cleared!");
+            ShowMainMenu();
+            AddToActivityLog("Conversation Cleared", "User cleared the conversation history");
+        }
+
+        // Button Click Handlers
+        private void TopicButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null && button.Tag != null)
+            {
+                string topic = button.Tag.ToString();
+                ProcessTopicSelection(topic);
+            }
+        }
+
+        private void ShowTasksButton_Click(object sender, RoutedEventArgs e)
+        {
+            string tasks = ShowAllTasks();
+            AddBotMessage(tasks);
+            AddToActivityLog("Tasks Viewed", "User requested to view tasks");
+        }
+
+        private void ShowRemindersButton_Click(object sender, RoutedEventArgs e)
+        {
+            string reminders = ShowAllReminders();
+            AddBotMessage(reminders);
+            AddToActivityLog("Reminders Viewed", "User requested to view reminders");
+        }
+
+        private void ShowLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowActivityLog();
+        }
+    }
+
+    // Task Item Class
+    public class TaskItem
+    {
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+
+    // Reminder Item Class
+    public class ReminderItem
+    {
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public string ReminderDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+
+    // Activity Log Entry Class
+    public class ActivityLogEntry
+    {
+        public DateTime Timestamp { get; set; }
+        public string ActionType { get; set; }
+        public string Description { get; set; }
+    }
+}
